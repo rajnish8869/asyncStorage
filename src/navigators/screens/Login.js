@@ -13,6 +13,7 @@ import {
 
 const Login = ({navigation}) => {
   const [name, setName] = useState('');
+  const [age, setAge] = useState('');
 
   useEffect(() => {
     getData();
@@ -20,7 +21,7 @@ const Login = ({navigation}) => {
 
   const getData = async () => {
     try {
-      await AsyncStorage.getItem('UserName').then(value => {
+      await AsyncStorage.getItem('UserData').then(value => {
         if (value != null) {
           navigation.navigate('home');
         }
@@ -31,11 +32,12 @@ const Login = ({navigation}) => {
   };
 
   const setData = async () => {
-    if (name.length == 0) {
+    if (name.length == 0 || age.length==0) {
       Alert.alert('warning', 'Enter the username');
     } else {
       try {
-        await AsyncStorage.setItem('UserName', name);
+        var user={Name:name,Age:age}
+        await AsyncStorage.setItem('UserData',JSON.stringify(user));
         navigation.navigate('home');
       } catch (error) {
         console.log('ERROR', error);
@@ -56,12 +58,26 @@ const Login = ({navigation}) => {
         placeholder="Enter username"
         style={{
           borderWidth: 2,
-          borderColor: 'red',
+          borderColor: 'pink',
+          backgroundColor:"white",
           borderRadius: 10,
           padding: 10,
-          margin: 30,
+          margin: 10,
         }}
         onChangeText={val => setName(val)}
+      />
+      <TextInput
+        placeholder="Enter age"
+        keyboardType='number-pad'
+        style={{
+          borderWidth: 2,
+          borderColor: 'pink',
+          backgroundColor:"white",
+          borderRadius: 10,
+          padding: 10,
+          margin: 10,
+        }}
+        onChangeText={val => setAge(val)}
       />
       <Button title="LOGIN" onPress={setData} />
     </View>

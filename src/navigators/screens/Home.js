@@ -5,6 +5,7 @@ import {Button, View, Text, TextInput, Alert} from 'react-native';
 
 const Home = ({navigation}) => {
   const [name, setName] = useState('');
+  const [age, setAge] = useState('');
 
   useEffect(() => {
     getData();
@@ -12,9 +13,11 @@ const Home = ({navigation}) => {
 
   const getData = async () => {
     try {
-      await AsyncStorage.getItem('UserName').then(value => {
+      await AsyncStorage.getItem('UserData').then(value => {
         if (value != null) {
-          setName(value);
+          let user = JSON.parse(value);
+          setName(user.Name);
+          setAge(user.Age);
         }
       });
     } catch (error) {
@@ -27,7 +30,10 @@ const Home = ({navigation}) => {
       Alert.alert('warning', 'Enter the username');
     } else {
       try {
-        await AsyncStorage.setItem('UserName', name);
+        var user={
+          Name:name,
+        }
+        await AsyncStorage.setItem('UserData', JSON.stringify(user));
         Alert.alert('Success!', 'Data has been updated');
       } catch (error) {
         console.log('ERROR', error);
@@ -47,7 +53,8 @@ const Home = ({navigation}) => {
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
       <Text style={{fontSize: 40}}>Welcome {name} !</Text>
-      <TextInput
+      <Text style={{fontSize: 40}}>May I know your {age} !</Text>
+     <TextInput
         placeholder="update name"
         style={{
           borderWidth: 1,
@@ -61,7 +68,6 @@ const Home = ({navigation}) => {
       />
       <Button title="UPDATE" onPress={updateData} />
       <Button title="REMOVE" onPress={removeData} />
-
     </View>
   );
 };
